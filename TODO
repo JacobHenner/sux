@@ -1,0 +1,6 @@
+--help (same as -?)
+
+One other improvement would be to avoid hijacking the TERM variable (causes
+problems on platforms that test $TERM without proper quoting). Should be
+possible by doing some creative piping and redirecting of a filedesc
+like '>&3' or stuff like that
