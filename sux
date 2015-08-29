@@ -19,8 +19,8 @@
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
-# COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
-# WHETHERIN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR 
+# COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+# WHETHERIN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 # IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
@@ -192,13 +192,13 @@ then
 fi
 
 
-## 
+##
 # Build the command to restore the cookies in the su
 if [ "$sux_cookie_transfer" = "c" ]
 then
   # --copy-cookies case. We copy the cookie(s) using the xauth command.
 
-  # If display is of the form "host:x.y" we may also need to get the 
+  # If display is of the form "host:x.y" we may also need to get the
   # cookies for "host/unix:x.y".
   sux_unix_display=`echo $DISPLAY | sed -e 's#^\([a-zA-Z_.][a-zA-Z_.]*\):#\1/unix:#'`
   if [ "$DISPLAY" = "$sux_unix_display" ]
@@ -209,7 +209,7 @@ then
   # Get the cookies if we don't have them already
   if [ -z "$sux_xauth_data" ]
   then
-    # Get the cookies. Note that we may need to 
+    # Get the cookies. Note that we may need to
     sux_xauth_data=`xauth -q nlist $DISPLAY`
     if [ -n "$sux_unix_display" ]
     then
@@ -217,18 +217,18 @@ then
     fi
   fi
 
-  # We highjack the TERM environment variable to transfer the cookies to the 
-  # other user. We do this so that they never appear on any command line, and 
-  # because TERM appears to be the only environment variable that is not 
-  # reset by su. Then, as long as 'echo' is a shell builtin, these cookies 
-  # will never appear as command line arguments which means noone will be 
+  # We highjack the TERM environment variable to transfer the cookies to the
+  # other user. We do this so that they never appear on any command line, and
+  # because TERM appears to be the only environment variable that is not
+  # reset by su. Then, as long as 'echo' is a shell builtin, these cookies
+  # will never appear as command line arguments which means noone will be
   # able to intercept them (assuming they were safe in the first place).
   sux_term="TERM='$TERM'"
-  # now we can store the script that will restore the cookies on the other 
+  # now we can store the script that will restore the cookies on the other
   # side of the su, in TERM!
 
-  # Remove the old cookies. They may cause trouble if we transfer only one 
-  # cookie, e.g. an MIT cookie, and there's still a stale XDM cookie hanging 
+  # Remove the old cookies. They may cause trouble if we transfer only one
+  # cookie, e.g. an MIT cookie, and there's still a stale XDM cookie hanging
   # around.
   export TERM="xauth -q remove $DISPLAY 2>/dev/null;"
   if [ -n "$sux_unix_display" ]
@@ -236,7 +236,7 @@ then
     TERM="$TERM xauth -q remove $sux_unix_display;"
   fi
 
-  # Note that there may be more than one cookie to transfer, hence 
+  # Note that there may be more than one cookie to transfer, hence
   # this loop
   sux_i=0
   for sux_str in $sux_xauth_data
@@ -248,7 +248,7 @@ then
       TERM="$TERM $sux_str"
     fi
     sux_i=`expr $sux_i + 1`
-    if [ $sux_i -eq 9 ]
+    if [ $sux_i -eq 8 ]
     then
       TERM="$TERM | xauth nmerge - ;"
       sux_i=0
@@ -258,7 +258,7 @@ then
   sux_xauthority=""
 elif [ "$sux_cookie_transfer" = "x" ]
 then
-  # --use-xauthority case. For root we can simplify things and simply 
+  # --use-xauthority case. For root we can simplify things and simply
   # access the original user's .Xauthority file.
   sux_term=""
   sux_xauth_cmd=""
@@ -269,7 +269,7 @@ then
     sux_xauthority="XAUTHORITY='$HOME/.Xauthority'"
   fi
 else
-  # --no-cookies case. We just transfer $DISPLAY and assume the 
+  # --no-cookies case. We just transfer $DISPLAY and assume the
   # target user already has the necessary cookies
   sux_term=""
   sux_xauth_cmd=""
@@ -278,8 +278,8 @@ fi
 
 
 ##
-# Marshall the specified command in an effort to support parameters that 
-# contain spaces. This should be enough to get commands like 
+# Marshall the specified command in an effort to support parameters that
+# contain spaces. This should be enough to get commands like
 # 'xterm -title "My XTerm"' to work.
 sux_cmd=""
 if [ $# -gt 0 ]
@@ -312,7 +312,7 @@ fi
 
 
 ##
-# We would not want the other user to try and use our XAUTHORITY file. He 
+# We would not want the other user to try and use our XAUTHORITY file. He
 # wouldn't have the proper access rights anyway...
 unset XAUTHORITY
 
